@@ -1,7 +1,21 @@
 <html>
-<meta http-equiv="Content-Type"'.' content="text/html; charset=utf8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf8"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="style.css">
+<style>
+	.book-container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+	.book-item {
+		width: 23%;
+		margin-bottom: 20px;
+	}
+	.book-item img {
+		width: 100%;
+	}
+</style>
 <body>
 <?php
 session_start();
@@ -61,11 +75,11 @@ session_start();
 	} 
 
 	$sql = "USE bookstore";
-	$conn->query($sql);	
+	$conn->query($sql);    
 
 	$sql = "SELECT * FROM book";
 	$result = $conn->query($sql);
-?>	
+?>  
 
 <?php
 if(isset($_SESSION['id'])){
@@ -88,22 +102,24 @@ if(!isset($_SESSION['id'])){
 	echo '</header>';
 }
 echo '<blockquote>';
-	echo "<table id='myTable' style='width:80%; float:left'>";
-	echo "<tr>";
+	echo "<div class='book-container'>";
 	while($row = $result->fetch_assoc()) {
-		echo "<td>";
-		echo "<table>";
-		echo '<tr><td>'.'<img src="'.$row["Image"].'"width="80%">'.'</td></tr><tr><td style="padding: 5px;">Title: '.$row["BookTitle"].'</td></tr><tr><td style="padding: 5px;">Author: '.$row["Author"].'</td></tr><tr><td style="padding: 5px;">Type: '.$row["Type"].'</td></tr><tr><td style="padding: 5px;">IDR'.$row["Price"].'</td></tr><tr><td style="padding: 5px;">
-		<form action="" method="post">
-		Quantity: <input type="number" value="1" name="quantity" style="width: 20%"/><br>
-		<input type="hidden" value="'.$row['BookID'].'" name="ac"/>
-		<input class="button" type="submit" value="Add to Cart"/>
-		</form></td></tr>';
-		echo "</table>";
-		echo "</td>";
+		echo "<div class='book-item'>";
+		echo '<img src="'.$row["Image"].'">';
+		echo '<div style="padding: 5px;">Title: '.$row["BookTitle"].'</div>';
+		echo '<div style="padding: 5px;">Author: '.$row["Author"].'</div>';
+		echo '<div style="padding: 5px;">Type: '.$row["Type"].'</div>';
+		echo '<div style="padding: 5px;">IDR'.$row["Price"].'</div>';
+		echo '<div style="padding: 5px;">
+			<form action="" method="post">
+			Quantity: <input type="number" value="1" name="quantity" style="width: 20%"/><br>
+			<input type="hidden" value="'.$row['BookID'].'" name="ac"/>
+			<input class="button" type="submit" value="Add to Cart"/>
+			</form>
+		</div>';
+		echo "</div>";
 	}
-	echo "</tr>";
-	echo "</table>";
+	echo "</div>";
 
 	$sql = "SELECT book.BookTitle, book.Image, cart.Price, cart.Quantity, cart.TotalPrice FROM book,cart WHERE book.BookID = cart.BookID;";
 	$result = $conn->query($sql);
