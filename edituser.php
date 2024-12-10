@@ -1,13 +1,12 @@
 <?php
 session_start();
-$nameErr = $emailErr = $genderErr = $addressErr = $icErr = $contactErr = $usernameErr = $passwordErr = "";
-$name = $email = $gender = $address = $ic = $contact = $uname = $upassword = "";
+$nameErr = $emailErr = $genderErr = $addressErr = $contactErr = $usernameErr = $passwordErr = "";
+$name = $email = $gender = $address = $contact = $uname = $upassword = "";
 $cID;
 
 $oUserName;
 $oPassword;
 $oName;
-$oIC;
 $oEmail;
 $oPhone;
 $oAddress;
@@ -19,13 +18,13 @@ $password = "";
 $conn = new mysqli($servername, $username, $password); 
 
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+	die("Connection failed: " . $conn->connect_error);
 } 
 
 $sql = "USE bookstore";
 $conn->query($sql);
 
-$sql = "SELECT users.UserName, users.Password, customer.CustomerName, customer.CustomerIC, customer.CustomerEmail, customer.CustomerPhone, customer.CustomerGender, customer.CustomerAddress
+$sql = "SELECT users.UserName, users.Password, customer.CustomerName, customer.CustomerEmail, customer.CustomerPhone, customer.CustomerGender, customer.CustomerAddress
 	FROM users, customer
 	WHERE users.UserID = customer.UserID AND users.UserID = ".$_SESSION['id']."";
 $result = $conn->query($sql);
@@ -33,7 +32,6 @@ while($row = $result->fetch_assoc()){
 	$oUserName = $row['UserName'];
 	$oPassword = $row['Password'];
 	$oName = $row['CustomerName'];
-	$oIC = $row['CustomerIC'];
 	$oEmail = $row['CustomerEmail'];
 	$oPhone = $row['CustomerPhone'];
 	$oAddress = $row['CustomerAddress'];
@@ -62,70 +60,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				}else{
 					$upassword = $_POST['upassword'];
 
-					if (empty($_POST["ic"])){
-						$icErr = "Please enter your IC number";
+					if (empty($_POST["email"])){
+						$emailErr = "Please enter your email address";
 					}else{
-						if(!preg_match("/^[0-9 -]*$/", $ic)){
-							$icErr = "Please enter a valid IC number";
-							$ic = "";
+						if (filter_var($email, FILTER_VALIDATE_EMAIL)){
+							$emailErr = "Invalid email format";
+							$email = "";
 						}else{
-							$ic = $_POST['ic'];
+							$email = $_POST['email'];
 
-							if (empty($_POST["email"])){
-								$emailErr = "Please enter your email address";
+							if (empty($_POST["contact"])){
+								$contactErr = "Please enter your phone number";
 							}else{
-								if (filter_var($email, FILTER_VALIDATE_EMAIL)){
-									$emailErr = "Invalid email format";
-									$email = "";
+								if(!preg_match("/^[0-9 -]*$/", $contact)){
+									$contactErr = "Please enter a valid phone number";
+									$contact = "";
 								}else{
-									$email = $_POST['email'];
+									$contact = $_POST['contact'];
 
-									if (empty($_POST["contact"])){
-										$contactErr = "Please enter your phone number";
+									if (empty($_POST["gender"])){
+										$genderErr = "* Gender is required!";
+										$gender = "";
 									}else{
-										if(!preg_match("/^[0-9 -]*$/", $contact)){
-											$contactErr = "Please enter a valid phone number";
-											$contact = "";
+										$gender = $_POST['gender'];
+
+										if (empty($_POST["address"])){
+											$addressErr = "Please enter your address";
+											$address = "";
 										}else{
-											$contact = $_POST['contact'];
+											$address = $_POST['address'];
 
-											if (empty($_POST["gender"])){
-												$genderErr = "* Gender is required!";
-												$gender = "";
-											}else{
-												$gender = $_POST['gender'];
+											$servername = "localhost";
+											$username = "root";
+											$password = "";
 
-												if (empty($_POST["address"])){
-													$addressErr = "Please enter your address";
-													$address = "";
-												}else{
-													$address = $_POST['address'];
+											$conn = new mysqli($servername, $username, $password); 
 
-													$servername = "localhost";
-													$username = "root";
-													$password = "";
+											if ($conn->connect_error) {
+												die("Connection failed: " . $conn->connect_error);
+											} 
 
-													$conn = new mysqli($servername, $username, $password); 
+											$sql = "USE bookstore";
+											$conn->query($sql);
 
-													if ($conn->connect_error) {
-													    die("Connection failed: " . $conn->connect_error);
-													} 
+											$sql = "UPDATE users SET UserName = '".$uname."', Password = '".$upassword."' WHERE UserID = "
+											.$_SESSION['id']."";
+											$conn->query($sql);
 
-													$sql = "USE bookstore";
-													$conn->query($sql);
+											$sql = "UPDATE customer SET CustomerName = '".$name."', CustomerPhone = '".$contact."', 
+											CustomerEmail = '".$email."', CustomerAddress = '".$address."', 
+											CustomerGender = '".$gender."'";
+											$conn->query($sql);
 
-													$sql = "UPDATE users SET UserName = '".$uname."', Password = '".$upassword."' WHERE UserID = "
-													.$_SESSION['id']."";
-													$conn->query($sql);
-
-													$sql = "UPDATE customer SET CustomerName = '".$name."', CustomerPhone = '".$contact."', 
-													CustomerIC = '".$ic."', CustomerEmail = '".$email."', CustomerAddress = '".$address."', 
-													CustomerGender = '".$gender."'";
-													$conn->query($sql);
-
-													header("Location:index.php");
-												}
-											}
+											header("Location:index.php");
 										}
 									}
 								}
@@ -165,9 +152,6 @@ function test_input($data){
 	New Password:<br><input type="password" name="upassword" placeholder="<?php echo $oPassword; ?>">
 	<span class="error" style="color: red; font-size: 0.8em;"><?php echo $passwordErr;?></span><br><br>
 
-	IC Number:<br><input type="text" name="ic" placeholder="<?php echo $oIC; ?>">
-	<span class="error" style="color: red; font-size: 0.8em;"><?php echo $icErr;?></span><br><br>
-
 	E-mail:<br><input type="text" name="email" placeholder="<?php echo $oEmail; ?>">
 	<span class="error" style="color: red; font-size: 0.8em;"><?php echo $emailErr;?></span><br><br>
 
@@ -180,14 +164,13 @@ function test_input($data){
 	<span class="error" style="color: red; font-size: 0.8em;"><?php echo $genderErr;?></span><br><br>
 
 	<label>Address:</label><br>
-    <textarea name="address" cols="50" rows="5" placeholder="<?php echo $oAddress; ?>"></textarea>
-    <span class="error" style="color: red; font-size: 0.8em;"><?php echo $addressErr;?></span><br><br>
+	<textarea name="address" cols="50" rows="5" placeholder="<?php echo $oAddress; ?>"></textarea>
+	<span class="error" style="color: red; font-size: 0.8em;"><?php echo $addressErr;?></span><br><br>
 	
 	<input class="button" type="submit" name="submitButton" value="Edit">
 	<input class="button" type="button" name="cancel" value="Cancel" onClick="window.location='index.php';" />
 </form>
 </div>
 </blockquote>
-</center>
 </body>
 </html>

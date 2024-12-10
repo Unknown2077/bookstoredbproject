@@ -13,7 +13,7 @@ session_start();
 		$conn = new mysqli($servername, $username, $password);
 
 		if ($conn->connect_error) {
-		    die("Connection failed: " . $conn->connect_error);
+			die("Connection failed: " . $conn->connect_error);
 		} 
 
 		$sql = "USE bookstore";
@@ -40,7 +40,7 @@ session_start();
 		$conn = new mysqli($servername, $username, $password);
 
 		if ($conn->connect_error) {
-		    die("Connection failed: " . $conn->connect_error);
+			die("Connection failed: " . $conn->connect_error);
 		} 
 
 		$sql = "USE bookstore";
@@ -57,7 +57,7 @@ session_start();
 	$conn = new mysqli($servername, $username, $password);
 
 	if ($conn->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
+		die("Connection failed: " . $conn->connect_error);
 	} 
 
 	$sql = "USE bookstore";
@@ -90,38 +90,38 @@ if(!isset($_SESSION['id'])){
 echo '<blockquote>';
 	echo "<table id='myTable' style='width:80%; float:left'>";
 	echo "<tr>";
-    while($row = $result->fetch_assoc()) {
-	    echo "<td>";
-	    echo "<table>";
-	   	echo '<tr><td>'.'<img src="'.$row["Image"].'"width="80%">'.'</td></tr><tr><td style="padding: 5px;">Title: '.$row["BookTitle"].'</td></tr><tr><td style="padding: 5px;">ISBN: '.$row["ISBN"].'</td></tr><tr><td style="padding: 5px;">Author: '.$row["Author"].'</td></tr><tr><td style="padding: 5px;">Type: '.$row["Type"].'</td></tr><tr><td style="padding: 5px;">IDR'.$row["Price"].'</td></tr><tr><td style="padding: 5px;">
-	   	<form action="" method="post">
-	   	Quantity: <input type="number" value="1" name="quantity" style="width: 20%"/><br>
-	   	<input type="hidden" value="'.$row['BookID'].'" name="ac"/>
-	   	<input class="button" type="submit" value="Add to Cart"/>
-	   	</form></td></tr>';
-	   	echo "</table>";
-	   	echo "</td>";
-    }
-    echo "</tr>";
-    echo "</table>";
+	while($row = $result->fetch_assoc()) {
+		echo "<td>";
+		echo "<table>";
+		echo '<tr><td>'.'<img src="'.$row["Image"].'"width="80%">'.'</td></tr><tr><td style="padding: 5px;">Title: '.$row["BookTitle"].'</td></tr><tr><td style="padding: 5px;">Author: '.$row["Author"].'</td></tr><tr><td style="padding: 5px;">Type: '.$row["Type"].'</td></tr><tr><td style="padding: 5px;">IDR'.$row["Price"].'</td></tr><tr><td style="padding: 5px;">
+		<form action="" method="post">
+		Quantity: <input type="number" value="1" name="quantity" style="width: 20%"/><br>
+		<input type="hidden" value="'.$row['BookID'].'" name="ac"/>
+		<input class="button" type="submit" value="Add to Cart"/>
+		</form></td></tr>';
+		echo "</table>";
+		echo "</td>";
+	}
+	echo "</tr>";
+	echo "</table>";
 
 	$sql = "SELECT book.BookTitle, book.Image, cart.Price, cart.Quantity, cart.TotalPrice FROM book,cart WHERE book.BookID = cart.BookID;";
 	$result = $conn->query($sql);
 
-    echo "<table style='width:20%; float:right;'>";
-    echo "<th style='text-align:left;'><i class='fa fa-shopping-cart' style='font-size:24px'></i> Cart <form style='float:right;' action='' method='post'><input type='hidden' name='delc'/><input class='cbtn' type='submit' value='Empty Cart'></form></th>";
-    $total = 0;
-    while($row = $result->fetch_assoc()){
-    	echo "<tr><td>";
-    	echo '<img src="'.$row["Image"].'"width="20%"><br>';
-    	echo $row['BookTitle']."<br>IDR".$row['Price']."<br>";
-    	echo "Quantity: ".$row['Quantity']."<br>";
-    	echo "Total Price: IDR".$row['TotalPrice']."</td></tr>";
-    	$total += $row['TotalPrice'];
-    }
-    echo "<tr><td style='text-align: right;background-color: #f2f2f2;''>";
-    echo "Total: <b>IDR".$total."</b><center><form action='checkout.php' method='post'><input class='button' type='submit' name='checkout' value='CHECKOUT'></form></center>";
-    echo "</td></tr>";
+	echo "<table style='width:20%; float:right;'>";
+	echo "<th style='text-align:left;'><i class='fa fa-shopping-cart' style='font-size:24px'></i> Cart <form style='float:right;' action='' method='post'><input type='hidden' name='delc'/><input class='cbtn' type='submit' value='Empty Cart'></form></th>";
+	$total = 0;
+	while($row = $result->fetch_assoc()){
+		echo "<tr><td>";
+		echo '<img src="'.$row["Image"].'"width="20%"><br>';
+		echo $row['BookTitle']."<br>IDR".$row['Price']."<br>";
+		echo "Quantity: ".$row['Quantity']."<br>";
+		echo "Total Price: IDR".$row['TotalPrice']."</td></tr>";
+		$total += $row['TotalPrice'];
+	}
+	echo "<tr><td style='text-align: right;background-color: #f2f2f2;''>";
+	echo "Total: <b>IDR".$total."</b><center><form action='checkout.php' method='post'><input class='button' type='submit' name='checkout' value='CHECKOUT'></form></center>";
+	echo "</td></tr>";
 	echo "</table>";
 	echo '</blockquote>';
 ?>

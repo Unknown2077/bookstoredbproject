@@ -8,7 +8,7 @@
 </header>
 <blockquote>
 <div class="container">
-<center><h1>Login</h1></center>
+<h1 style="text-align: center;">Login</h1>
 <form action="checklogin.php" method="post">
     Username:<br><input type="text" name="username"/>
     <br><br>
