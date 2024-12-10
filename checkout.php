@@ -38,8 +38,7 @@ if(isset($_SESSION['id'])){
 	while ($row = $result->fetch_assoc()) {
 		$checkOrders = "SELECT * FROM `orders` 
 					   WHERE CustomerID = ".$row['CustomerID']." 
-					   AND BookID = '".$row['BookID']."' 
-					   AND Status = 'N'";
+					   AND BookID = '".$row['BookID']."'";
 		$existingOrders = $conn->query($checkOrders);
 
 		if ($existingOrders->num_rows > 0) {
@@ -52,8 +51,8 @@ if(isset($_SESSION['id'])){
 							WHERE OrderID = ".$existingRow['OrderID'];
 			$conn->query($updateOrders);
 		} else {
-			$insertOrders = "INSERT INTO `orders` (CustomerID, BookID, DatePurchase, Quantity, TotalPrice, Status) 
-							VALUES (".$row['CustomerID'].", '".$row['BookID']."', CURRENT_TIME, ".$row['Quantity'].", ".$row['TotalPrice'].", 'N')";
+			$insertOrders = "INSERT INTO `orders` (CustomerID, BookID, DatePurchase, Quantity, TotalPrice) 
+							VALUES (".$row['CustomerID'].", '".$row['BookID']."', CURRENT_TIME, ".$row['Quantity'].", ".$row['TotalPrice'].")";
 			$conn->query($insertOrders);
 		}
 	}
@@ -63,7 +62,7 @@ if(isset($_SESSION['id'])){
 
 	$sql = "SELECT customer.CustomerName, customer.CustomerGender, customer.CustomerAddress, customer.CustomerEmail, customer.CustomerPhone, book.BookTitle, book.Price, book.Image, `orders`.`DatePurchase`, `orders`.`Quantity`, `orders`.`TotalPrice`
 		FROM customer, book, `orders`
-		WHERE `orders`.`CustomerID` = customer.CustomerID AND `orders`.`BookID` = book.BookID AND `orders`.`Status` = 'N' AND `orders`.`CustomerID` = ".$cID."";
+		WHERE `orders`.`CustomerID` = customer.CustomerID AND `orders`.`BookID` = book.BookID AND `orders`.`CustomerID` = ".$cID."";
 	$result = $conn->query($sql);
 	echo '<div class="container">';
 	echo '<blockquote>';
@@ -85,7 +84,7 @@ if(isset($_SESSION['id'])){
 
 	$sql = "SELECT customer.CustomerName, customer.CustomerGender, customer.CustomerAddress, customer.CustomerEmail, customer.CustomerPhone, book.BookTitle, book.Price, book.Image, `orders`.`DatePurchase`, `orders`.`Quantity`, `orders`.`TotalPrice`
 		FROM customer, book, `orders`
-		WHERE `orders`.`CustomerID` = customer.CustomerID AND `orders`.`BookID` = book.BookID AND `orders`.`Status` = 'N' AND `orders`.`CustomerID` = ".$cID."";
+		WHERE `orders`.`CustomerID` = customer.CustomerID AND `orders`.`BookID` = book.BookID AND `orders`.`CustomerID` = ".$cID."";
 	$result = $conn->query($sql);
 	$total = 0;
 	while($row = $result->fetch_assoc()){
@@ -173,9 +172,9 @@ if(isset($_POST['submitButton'])){
 									$sql = "SELECT * FROM cart";
 									$result = $conn->query($sql);
 									while($row = $result->fetch_assoc()){
-										$sql = "INSERT INTO `orders`(CustomerID, BookID, DatePurchase, Quantity, TotalPrice, Status) 
+										$sql = "INSERT INTO `orders`(CustomerID, BookID, DatePurchase, Quantity, TotalPrice) 
 										VALUES(".$row['CustomerID'].", '".$row['BookID']
-										."', CURRENT_TIME, ".$row['Quantity'].", ".$row['TotalPrice'].", 'N')";
+										."', CURRENT_TIME, ".$row['Quantity'].", ".$row['TotalPrice'].")";
 										$conn->query($sql);
 									}
 									$sql = "DELETE FROM cart";
@@ -324,7 +323,7 @@ if(isset($_POST['submitButton'])){
 
 	$sql = "SELECT customer.CustomerName, customer.CustomerGender, customer.CustomerAddress, customer.CustomerEmail, customer.CustomerPhone, book.BookTitle, book.Price, book.Image, `orders`.`DatePurchase`, `orders`.`Quantity`, `orders`.`TotalPrice`
 		FROM customer, book, `orders`
-		WHERE `orders`.`CustomerID` = customer.CustomerID AND `orders`.`BookID` = book.BookID AND `orders`.`Status` = 'N' AND `orders`.`CustomerID` = ".$cID."";
+		WHERE `orders`.`CustomerID` = customer.CustomerID AND `orders`.`BookID` = book.BookID AND `orders`.`CustomerID` = ".$cID."";
 	$result = $conn->query($sql);
 
 	echo '<table style="width: 40%">';
@@ -340,7 +339,7 @@ if(isset($_POST['submitButton'])){
 
 	$sql = "SELECT customer.CustomerName, customer.CustomerGender, customer.CustomerAddress, customer.CustomerEmail, customer.CustomerPhone, book.BookTitle, book.Price, book.Image, `orders`.`DatePurchase`, `orders`.`Quantity`, `orders`.`TotalPrice`
 		FROM customer, book, `orders`
-		WHERE `orders`.`CustomerID` = customer.CustomerID AND `orders`.`BookID` = book.BookID AND `orders`.`Status` = 'N' AND `orders`.`CustomerID` = ".$cID."";
+		WHERE `orders`.`CustomerID` = customer.CustomerID AND `orders`.`BookID` = book.BookID AND `orders`.`CustomerID` = ".$cID."";
 	$result = $conn->query($sql);
 	$total = 0;
 	while($row = $result->fetch_assoc()){
